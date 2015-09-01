@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+void encode(int x, int m1, int m2, int[] enc){
+	enc[0] = x%m1;
+	enc[1] = x%m2;
+}
+
+int decode (int[] enc){
+	int dec;
+
+	return dec;	
+}
+
+
+int xeuclide(int a, int b) // prototipo della funzione Euclide //
+{
+    while(b) //ripetere finché non riduciamo a zero
+    {
+         int r = a%b;
+         a=b; b=r; //scambiamo il ruolo di a e b
+    }
+    return a; //... e quando b è (o è diventato) 0, il risultato è a
+}
+
+int main(){
+	int x=5, y=6;
+	int m1=15, m2=21;
+	int x1, x2, y1, y2; 
+	int w, z;
+	
+	//Encode adding some useless arbitrary factor
+	x1 = m1 + x; // %m1 return x
+	x2 = m2 + x; // %m2 return x
+	y1 = m1 + y; // %m1 return y
+	y2 = m2 + y; // %m2 return y
+	
+	//Decode
+	w = Euclide(x1, y1);
+	z = Euclide(x2, y2);
+	
+	printf("Original: x=%d, y=%d",x,y);
+	printf("MCD: x=%d, y=%d",w,z);
+}

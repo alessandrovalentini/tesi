@@ -1,0 +1,103 @@
+(define command-line-args '())
+
+(define fact
+  (lambda(n)
+    (if (= n 0)
+	1
+	(* n (fact (- n 1)))
+	)
+    )
+  )
+
+(define sum
+  (lambda(a b)
+    (+ a b)
+    )
+  )
+
+(define lst (list 1 2 3 4 5))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+					;List sum
+(define vsum
+  (lambda(lst) 
+    (
+     if(< (length lst)  1)
+       0
+       (+ (car lst) (vsum (cdr lst)))
+       )	
+    )
+  )
+;equivalent to
+(define (vsum1 lst) 
+  (
+   if(< (length lst)  1)
+     0
+     (+ (car lst) (vsum (cdr lst)))
+     )	
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Reverse list
+(define (rev lst)
+  (
+   if (null? lst)
+      '()
+      (append(rev (cdr lst)) (list (car lst)))
+      )
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;(call-with-input-file "myfile.txt"
+;  (lambda (input-port)
+;    (let loop ((x (read-char input-port)))
+;      (if (not (eof-object? x))
+;          (begin
+;            (display x)
+;            (loop (read-char input-port)))))))
+
+(define (readFile input-port)
+	(let loop ((x (read-char input-port)))
+		(if (not (eof-object? x))
+			(begin
+				(display x)
+				(loop (read-char input-port))
+			)
+		)
+	)
+)
+
+(call-with-input-file "myfile.txt" readFile)
+
+
+(define (printFile output)
+	(display "hello, world" output))
+    
+(call-with-output-file "myout.txt" printFile)
+
+;(define (readFile input)
+;	
+;	(while (not (eof-object? (read-char input)))
+;		(display (read-char input))
+;	)
+;)
+	 
+
+;(call-with-input-file "myfile.txt" readFile)
+
+
+
+; (let f((a 1)) (+ 2))
+
+(display "\n ")
+(display (fact 4))
+(display "\n Sum: ")
+(display (sum 10 10))
+(display "\n List sum: ")
+(display (vsum lst))
+(display "\n Rev: ")
+(display (rev lst))
+(display "\n ")
+
+(quit)

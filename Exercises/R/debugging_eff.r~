@@ -1,0 +1,58 @@
+#With NaN
+Call:
+  glm(formula = Efficiency ~ System + Treatment + Lab + Experience + 
+        Ability)
+
+Deviance Residuals: 
+  Min        1Q    Median        3Q       Max  
+-0.05953  -0.02186  -0.00740   0.01942   0.17666  
+
+Coefficients:
+  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         0.105965   0.026775   3.958 0.000366 ***
+  Systemxml-security -0.013688   0.015161  -0.903 0.372958    
+Treatmentrandom     0.042703   0.015210   2.807 0.008210 ** 
+  Lablab2            -0.002969   0.015560  -0.191 0.849828    
+Experiencemsc       0.008011   0.017410   0.460 0.648359    
+Abilitylow         -0.113660   0.030066  -3.780 0.000605 ***
+  Abilitymedium      -0.089142   0.020762  -4.294 0.000139 ***
+  ---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 0.002167442)
+
+Null deviance: 0.164195  on 40  degrees of freedom
+Residual deviance: 0.073693  on 34  degrees of freedom
+(9 observations deleted due to missingness)
+AIC: -126.83
+
+Number of Fisher Scoring iterations: 2
+
+#Without NaN
+Call:
+glm(formula = Efficiency ~ System + Treatment + Lab + Experience + 
+    Ability)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-0.05953  -0.02186  -0.00740   0.01942   0.17666  
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         0.105965   0.026775   3.958 0.000366 ***
+Systemxml-security -0.013688   0.015161  -0.903 0.372958    
+Treatmentrandom     0.042703   0.015210   2.807 0.008210 ** 
+Lablab2            -0.002969   0.015560  -0.191 0.849828    
+Experiencemsc       0.008011   0.017410   0.460 0.648359    
+Abilitylow         -0.113660   0.030066  -3.780 0.000605 ***
+Abilitymedium      -0.089142   0.020762  -4.294 0.000139 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 0.002167442)
+
+    Null deviance: 0.164195  on 40  degrees of freedom
+Residual deviance: 0.073693  on 34  degrees of freedom
+AIC: -126.83
+
+Number of Fisher Scoring iterations: 2

@@ -1,0 +1,293 @@
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; ASPIRE Project
+;;; FBK
+;;; data distance analysis
+;;; written by R. Tiella
+;;; based on a script written by B. Fisseha
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (display "load-path=")(display *load-path*)(newline)
+
+(load "common.stk")
+
+;;;
+;;; set the global variable current-file
+;;;
+;;;
+																				; Read userargv, if not provided print help message
+(define usage 
+	(lambda () 
+		(begin (display "usage: dd.stk .... -args <c sourcefile> [-f <fun name> | -a ]")(nl))
+	)
+)
+; dd.stk <file> : base case, one file with complete graph
+; dd.stk <file> -f : generate a dotty file for each graph
+; dd.stk <file> -a : print on screen a dotty version of the pdg
+; dd.stk ; if no argument print help message
+
+; print help message if no arg defined
+(if (null? *userargv*)
+	(usage)
+)
+
+(define current-file (expand-file-name (car *userargv*) ))
+
+;
+; builds the extended name of an absloc <type>:<name>@<scope> (kind is absloc kind)
+(define build-name-type
+	(lambda (absloc)
+
+		(let ((altype (abs-loc-type absloc 'normalized)))						; abs-loc-type Get the type AST (of the specified family) for a variable ABS_LOC. 
+			(let ((label 
+				(cond (altype (ast-label altype)) (#t "<NONE>"))				; ast-label Get a pretty-printed version of ast, optionally truncated to max-length. 
+			     ))
+			(string-append label ":" (build-name absloc))						; from common.stk
+			)
+		)
+	)
+)
+
+
+
+(define used-killed-in-actuals-in-out-merging;---------------------------------> NEVER USED?
+	(lambda (v) ; a actual-in vertex
+		
+		(let ((othersv (actual-in-actuals-out-as-list v)) (pairs '()))	
+			(if (not (null? othersv))
+				(begin
+					(map 														; apply a function to each element of the list
+						(lambda (othv)
+							(let ((using-vertices (using-vertices-list othv) )) ;using-vertices using-vertices-list
+								(map
+									(lambda (uvert)
+										(set! pairs
+											(append pairs
+												(combine-lists											;merge lists of used and unused vertex
+													(abs-loc-set->list (pdg-vertex-ids-used v))			;abs-loc-set->list pdg-vertex-ids-used
+													(abs-loc-set->list (pdg-vertex-ids-killed uvert))	;abs-loc-set->list pdg-vertex-ids-killed
+												)
+											)
+										)
+									)
+									using-vertices
+								)	
+							)
+						)
+						othersv
+					)
+				)
+			)
+			pairs
+		)
+	)
+)
+
+; Build a list of pairs: (used.killed) for each vertex 
+
+(define data-proximity-edge-list
+  (lambda (edge_set)	; edge_set port method_name
+
+    (let ((pairs '() ))
+	    (pdg-vertex-set-traverse												; For each vertexin "edge_set", process it as expression or as actual-in
+		edge_set
+		(lambda (v)
+			(cond ((member (pdg-vertex-kind v) '(expression)); ---------------> Expression or assignment statement.
+					(set! pairs													; pair is initialized empty and updated every time.
+						(append pairs															
+							(combine-lists														
+								(abs-loc-set->list (pdg-vertex-ids-used v))		; v belongs to edge_set
+								(abs-loc-set->list (pdg-vertex-ids-killed v))
+							)																	
+						)																		
+					)																			
+				)																;--------------------------------
+				((member (pdg-vertex-kind v) '(actual-in)); ------------------> Actual parameter in a function call.
+					(let ((othersv (actual-in-actuals-out-as-list v))) ;------> List of return parameters corresponding to v
+						(if (not (null? othersv))
+							(let ((othv (car othersv)))
+								(set! pairs										; Pairs list as above
+									(append pairs
+										(combine-lists
+											(abs-loc-set->list (pdg-vertex-ids-used v))
+											(abs-loc-set->list (pdg-vertex-ids-killed othv))
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			)
+	    )
+	    )
+	    pairs
+    )
+  )
+)
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; (data-proximity-graph)
+;;;
+;;; compute the data dependency graph for the whole project
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Find the pdg correspondand to fname, find its data-proximity-for-pdg and make a set of it
+
+(define data-proximity-graph-by-name ; it seems it doesn't work properly some nodes are missed
+	(lambda (fname)
+		(let ((grp 
+				(let ((main-pdg (car 											; filted pdgs keepeng only them which matches with fname, 
+						(filter 												;then take the firstone (i.e. look for fname)
+							(lambda (pdg)(string=? (pdg-procedure-name pdg) fname))	; main_pdg = pdg named fname (keep only the firstone)
+							(sdg-pdgs)
+						))))										
+					(data-proximity-for-pdg main-pdg)							; call data-proximity-for-pdg for main-pdg
+				)
+		     ))
+		     (list-to-set grp)
+		)
+	)
+)
+
+;Create a dotty file named <file>.<procedure>.prox.dot
+(define build-prox-dot-fn
+	(lambda (pdg)
+		(string-append current-file "." (pdg-friendly-name pdg) ".prox.dot")	; pdg-friendly-name
+	)
+)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; (data-proximity-pdg pdg)
+;;;
+;;; retrieve data proximity graph extracted from pdg 
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; if pdg not empty retrieve all vertexes and call data-proximity-edge-list (above)
+(define data-proximity-for-pdg
+	(lambda (pdg)
+	  (if (not (equal? pdg '()))											
+			(data-proximity-edge-list (pdg-vertices pdg)) 								
+	  )
+	)
+)
+
+; Return true if pdg_set is null
+; otherwise, for each 'user-defined procedure (i.e. pdg), find its proximity graph and save it in a dotty file
+; each graph will be saved in a separated file due to the loop.
+(define data-proximity-graph-each-fun
+	(lambda () 
+	(let loop ((pdgs (sdg-pdgs)))
+		(cond 
+			((null? pdgs) #t) 
+			(else 
+				(let ((pdg (car pdgs)))
+					(if (eq? (pdg-kind pdg) 'user-defined)
+						(begin ;;; (display pdg) (nl)
+							(let ((outp (open-output-file (build-prox-dot-fn pdg) ))) ;create proximity dotty file and open it
+								(with-output-to-port outp;<-----------------------------------------------------------------------
+									 (lambda ()
+										(let ((grp (data-proximity-for-pdg pdg)))
+											(dotty-header)
+											(map
+												format-edge-dotty				; make a set of edges and format it for dotty
+												(list-to-set grp)
+											)
+
+											(dotty-footer)
+										)
+									)
+								)
+								(close-output-port outp);<-----------------------------------------------------------------------
+							)
+						)
+					)
+					(loop (cdr pdgs)) ; loop passing the remaining pdgs
+				)
+			)
+		)
+	)
+	)
+)
+
+(define data-proximity-graph-all-funs
+	(lambda () 
+	(begin
+	(dotty-header)																;insert dotty header
+	(let loop ((pdgs (sdg-pdgs)))
+		(cond 
+			((null? pdgs) #t) 
+			(else 
+				(let ((pdg (car pdgs)))
+					(if (eq? (pdg-kind pdg) 'user-defined)						; select only user-defined procedure
+						(let ((grp (data-proximity-for-pdg pdg)))				; request proximity graph for each pdg
+							(map
+								format-edge-dotty								; make a set of all graphs and save them in a file.
+								(list-to-set grp)								
+							)
+
+						)
+					)
+					(loop (cdr pdgs))											;loops with remaining pdgs
+				)
+			)
+		)
+	)
+	(dotty-footer)																; insert dotty footer
+	)
+	)
+)
+;calculate data proximity graph on all pdgs of the SDG
+(define (data-proximity-graph)	; NEVER USED
+      (unfold-list						; get a list-of-lists and make a plain list
+	      (map 
+			(lambda (pdg) 
+				(data-proximity-for-pdg pdg)									; internal call
+			) 
+			(sdg-pdgs)															; get all pdgs in the sdg (i.e. all procedures in the program)
+	      )
+      )
+)
+
+
+
+
+
+
+;;;
+;;; outputs the proximity graph for main function
+;;;
+(define dotty-proximity-main
+	(lambda (fname)
+
+		(dotty-header)
+
+		(map
+			; (lambda (x) (display x) (nl)) ; 
+			format-edge-dotty
+			(data-proximity-graph-by-name fname)
+		)
+
+		(dotty-footer)
+	)
+)
+
+(cond 
+	( (null? (cdr *userargv*)) (data-proximity-graph-all-funs) )
+	( (string=? (cadr *userargv*) "-f" ) (	data-proximity-graph-each-fun))
+	( #t (dotty-proximity-main (cadr *userargv*)))
+)
+
+
+(quit)

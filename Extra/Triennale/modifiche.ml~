@@ -1,0 +1,56 @@
+(* Lexer *)
+	| "^"		{ REF }
+	| "@"		{ DRF }
+	| "^int"	{ PINT }
+	| "^float"	{ PFLOAT }
+	
+(* Parser *)
+	%token 		PNT DRF PINT PFLOAT
+	
+	pType
+		:
+		 PINT		{Loc($1)}
+		|PFLOAT		{Loc($1)}
+		;
+		
+	dec
+	...
+	| VAR ide COLON pType				{ Dec($2,$5) }
+	
+(* Syntax Tree *)
+	type pType loc = Loc of bType
+
+(* Interpreter *)
+	exception NOT_A_POINTER
+	
+	(* Declaration *)
+	|Dec(x,l)...........................................................
+
+	
+	(* ide -> loc *)
+	| ref(id)
+	     		-> match r id with 
+	     			   Var(add) -> add
+	     			 | _ -> raise  NOT_A_POINTER
+	(* loc -> value *)	 
+	| drf(l)
+			-> s l
+			
+			
+(* ALTERNATIVA: *)
+(* Lexer *)
+	| "^"		{ REF }
+	| "@"		{ DRF }
+	
+(* Parser *)
+	%token 		PNT DRF
+		
+	dec
+	...
+	| VAR ide COLON REF ide				{ Dec($2,$5) }
+	
+(* Syntax Tree *)
+	type pType loc = Loc of bType
+	
+	|Dec(p,ide(x))::decls
+			-> match Var(add)  

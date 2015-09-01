@@ -1,0 +1,166 @@
+\chapter{TXL}
+	TXL takes as input an arbitrary context-free grammar in BNF-like notation and automatically parses inputs in the language described by the grammar.
+	\cite{cordy2011excerpts}
+	
+	\section{Installation}
+	Txl can be downloaded from the download section of txl.ca, simply choose the right version and follow the intructions! Essentially download, unzip and run IntallTXL as superuser. Extracted files can be deleted.
+	\subsubsection{Run}
+	Txl requires a file .txl (e.g. parser.txl) and an imput file which ends with the name of its txl interpreter (e.g. input.parser). The two files has to be located in the same directory.
+	
+	\section{Basic Syntax}
+	The TXL grammar may be arbitrarily ambiguous or left/right recursive if desired, although parsing efficiency can be improved if the grammar is more carefully crafted. The only restriction is that the grammar must be context free, so that some parse can be constructed for every valid input.
+	
+	\begin{lstlisting}
+		% Part I.  Syntax specification
+		define program
+			    [expression]
+		end define 
+			              
+		define expression
+			    [term]
+			|   [expression] [addop] [term]
+		end define 
+			              
+		define term
+			    [primary]
+			|   [term] [mulop] [primary]
+		end define 
+			              
+		define primary
+			    [number]
+			|   ( [expression] )
+		end define 
+			              
+		define addop
+			    '+
+			|   '-
+		end define 
+			              
+		define mulop
+			    '*
+			|   '/
+		end define 
+	\end{lstlisting}
+	
+	\subsubsection{Nonterminal Symbols}
+	Nonterminal symbols are those symbols which can be replaced. The built-in nonterminals of TXL include: 
+	\begin{itemize}
+		\itembf{[number]} unsigned numeric constant
+		\itembf{[id]} identifer
+		\itembf{[stringlit]} any double-quoted string
+		\itembf{[charlit]} any single-quoted string
+	\end{itemize}	
+
+	\subsubsection{Terminal Symbols}
+	Terminal symbols are literal symbols which may appear in the inputs to or outputs from the production rules of a formal grammar and which cannot be changed using the rules of the grammar. Terminal symbol have to be preceeded by a ' in order to use them as nonterminal symbols.
+	Terminal symbols of more than a character have to be declared in "compound"
+	
+	\begin{lstlisting}	
+	compounds
+	        ->  :=
+	end compounds
+	\end{lstlisting}
+	
+	Reserved keywords have to be declared in "keys"
+	
+	\begin{lstlisting}
+	keys
+	        var procedure exists inout out
+	end keys
+	\end{lstlisting}
+	
+	\subsubsection{Nonterminal Modifiers}
+	Grammars are most efficient and natural in TXL when most user-oriented, using sequences in preference to recursion, and simpler forms rather than semantically distinguished cases. "Wildcard style" operators have to be insered inside the square brackets of the type(e.g. [repeat number]) and are defined below:
+	\begin{itemize}
+	\itembf{[opt X]:} an optional X
+	\itembf{[repeat X]:} a sequence of zero	or more X's (Kleene star)
+	\itembf{[repeat X+]:} a sequence of one	or more X's
+	\itembf{[list X]:} a comma-separated list of zero or more X's
+	\itembf{[list X+]:} a comma-separated list of one or more X's
+	\end{itemize}
+	
+	\subsection{Rules and functions}
+	The rule set calculates the outcome by successively substituting the result value for each single operator subexpression (even invoking sub-rules) until no operations remain. The order of rule declaration is irrelevant, although every rule used must be declared somewhere in the program. TXL rules are total: if no first match at all can be found in the original scope, the rule returns the unchanged scope as result.
+	
+	Every TXL rule set is rooted at the mandatory rule named "main". The TXL transformation paradigm involves repeatedly applying the main rule to the entire input parse tree until it fails. A rule has 3 components: the targeted type (expression to look for), a pattern (a specific case of the type to replace) and a replacement (new expression to insert instead of the old one).
+	
+	A rule acts like a function: X[f] (e.g. where f = + Y) has the meaning of f(x) (e.g. f(x) = x+y). For example replacing each numeric addition subexpression by its result in the rule [resolveAddition]: N1 and N2 capture the corresponding subtrees of the (sub-) parse tree that matches, so that they can be used in the replacement. One-pass rule is a particular subcase: while the basic version reapply the transformation to its result (the program may run forever) \textbf{rule \$} will search only inside the original input
+	
+	\begin{lstlisting}
+	 function name
+	 	replace [type]
+	 		pattern
+	 	by
+	 		replacement
+	 end function
+	\end{lstlisting}
+	
+	TXL don't search repeatedly but simply replace occurrences in its scope so they requires a precise type, otherwise fail. The result is very similar to functions of any programming language. Function * replace only the first occurrences of the espression then stops.
+	
+	\begin{lstlisting}
+		function addDotProduct V1 [repeat number] 
+		                       V2 [repeat number]
+		    deconstruct V1
+		        First1 [number] Rest1 [repeat number]
+		    deconstruct V2
+		        First2 [number] Rest2 [repeat number]
+		    % ...
+		end function
+	\end{lstlisting}
+	
+	TXL has some built-in rules which provide some basic operators:
+	\begin{itemize}
+		\itembf{numeric:} aritmetic operators +, -, *, and /
+		\itembf{string:} + (concatenate), : (substring), and \# (length)
+		\itembf{identifiers:} + (concatenate), \_ (concatenate using underscore), and ! (make unique)
+		\itembf{generic:} comparisons \textless, \textless=, \textgreater, \textgreater= (for strings, numbers and identifiers), and = and \~= (for all nonterminal types).
+	\end{itemize}
+	
+		\subsubsection{Where}
+		The part of the rule that is new here is the where clause, which places an additional condition on pattern matching for the rule. If the condition is not met for a given instance of the pattern, then the pattern is considered not to have matched and a new match is searched for.\\
+		Is similare to the where clause in SQL.
+		
+		\begin{lstlisting}
+			rule main
+			    replace [repeat number]
+			        N1 [number] N2 [number] Rest [repeat number]
+			    where
+			        N1 [> N2]
+			    by
+			        N2 N1 Rest
+			end rule
+		\end{lstlisting}
+	
+	\subsection{Constructors and deconstructors}
+	Constructors allow partial results to be bound to new variables, allowing subrules to further transform them in the replacement or other constructors. e.g. can be used to recursively sum a series of numbers.
+	A construct statement creates and names a new parse tree of the desired nonterminal type and optionally applies a set of subrules to it. The constructed tree can then be used to help build the replacement of the rule. 
+	
+	\begin{lstlisting}
+	rule main
+	    replace [program]
+	        ( V1 [repeat number] ) . ( V2 [repeat number] )
+	    construct Zero [number]
+	        0
+	    by
+	        Zero [addDotProduct V1 V2]
+	end rule
+	\end{lstlisting}
+	
+	Conversly, deconstruct breaks up the tree trying to match it to another pattern. It plits the result in a first element and the remaining ones.
+	\begin{lstlisting}
+	rule addDotProduct V1 [repeat number] 
+	                   V2 [repeat number]
+	    deconstruct V1
+	        First1 [number] Rest1 [repeat number]
+	    deconstruct V2
+	        First2 [number] Rest2 [repeat number]
+	    construct ProductOfFirsts [number]
+	        First1 [* First2]
+	    replace [number]
+	        N [number]
+	    by
+	        N [+ ProductOfFirsts] 
+		  [addDotProduct Rest1 Rest2]
+	end rule
+	\end{lstlisting}
+		

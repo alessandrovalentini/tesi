@@ -1,0 +1,67 @@
+\documentclass[oneside, a4paper, titlepage, openright]{report}
+
+%for future use
+\usepackage[]{color, commath, listings, pdfpages,graphicx, amsmath, rotating, longtable}
+\pagestyle{headings}
+\newcommand{\hl}[1]{{\colorbox{yellow}{#1}}}
+\newcommand{\itembf}[1]{\item \textbf{#1}}
+
+%For code representation
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{light-gray}{rgb}{0.9,0.9,0.9}
+ 	
+\lstset{frame=tb,
+  language=java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  backgroundcolor=\color{light-gray},
+  basicstyle={\small\ttfamily},
+  frame=single,
+  numbers=left, 
+  %numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+  tabsize=3,
+  keepspaces=true
+}
+
+%opening
+\title{Code Obfuscation Notes}
+\author{Alessandro Valentini}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	An introduction about table of code obfuscation and its techniques.
+\end{abstract}
+
+\tableofcontents
+
+\include{./taxonomy}
+
+\include{./aspire}
+
+\include{./debugging}
+
+\include{./math}
+
+\include{./txl}
+
+\include{./R}
+
+\include{./csurf}
+	
+\bibliographystyle{ieeetr}
+\bibliography{notex}
+
+\end{document}

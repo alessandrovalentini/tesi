@@ -1,0 +1,114 @@
+\contentsline {chapter}{\numberline {1}Taxonomy}{3}
+\contentsline {section}{\numberline {1.1}What is code obfuscation}{3}
+\contentsline {section}{\numberline {1.2}Code transformation}{3}
+\contentsline {section}{\numberline {1.3}Deobfuscation techniques}{4}
+\contentsline {subsection}{\numberline {1.3.1}Program slicing}{4}
+\contentsline {subsection}{\numberline {1.3.2}Static analysis}{4}
+\contentsline {subsection}{\numberline {1.3.3}Theorem Proving}{4}
+\contentsline {subsection}{\numberline {1.3.4}Dynamic analysis}{5}
+\contentsline {section}{\numberline {1.4}Code Samples}{5}
+\contentsline {subsection}{\numberline {1.4.1}Aggregation}{5}
+\contentsline {subsection}{\numberline {1.4.2}Conjunctive Normal Form}{6}
+\contentsline {chapter}{\numberline {2}Aspire}{8}
+\contentsline {section}{\numberline {2.1}Parametric encoding}{8}
+\contentsline {section}{\numberline {2.2}Aggregation Transformation}{9}
+\contentsline {section}{\numberline {2.3}Selection of data obfuscation algorithms}{9}
+\contentsline {section}{\numberline {2.4}Metrics}{10}
+\contentsline {section}{\numberline {2.5}Security annotations}{10}
+\contentsline {subsubsection}{Data annotation}{10}
+\contentsline {subsubsection}{Code annotation}{10}
+\contentsline {subsection}{\numberline {2.5.1}Scoping}{10}
+\contentsline {subsection}{\numberline {2.5.2}Annotations}{11}
+\contentsline {subsubsection}{Protection Annotation}{11}
+\contentsline {subsubsection}{Profile Annotation}{11}
+\contentsline {subsubsection}{Security Requirement Annotation}{11}
+\contentsline {subsection}{\numberline {2.5.3}Conversion steps}{12}
+\contentsline {chapter}{\numberline {3}Debugging effectiveness}{13}
+\contentsline {section}{\numberline {3.1}Introduction}{13}
+\contentsline {subsection}{\numberline {3.1.1}Definition and planning}{13}
+\contentsline {subsection}{\numberline {3.1.2}Hypothesis}{14}
+\contentsline {section}{\numberline {3.2}Results}{14}
+\contentsline {subsection}{\numberline {3.2.1}Results MvR}{14}
+\contentsline {subsubsection}{Effectiveness}{14}
+\contentsline {subsubsection}{Efficency}{14}
+\contentsline {subsubsection}{Understandability}{14}
+\contentsline {subsection}{\numberline {3.2.2}MvE}{14}
+\contentsline {subsubsection}{Effectiveness}{14}
+\contentsline {subsubsection}{Efficency}{14}
+\contentsline {subsubsection}{Understandability}{15}
+\contentsline {subsection}{\numberline {3.2.3}MvO}{15}
+\contentsline {subsubsection}{Effectiveness}{15}
+\contentsline {subsubsection}{Efficency}{15}
+\contentsline {subsubsection}{Understandability}{15}
+\contentsline {section}{\numberline {3.3}Conclusions}{15}
+\contentsline {subsection}{\numberline {3.3.1}Evidence}{15}
+\contentsline {subsection}{\numberline {3.3.2}Threats to validity}{15}
+\contentsline {chapter}{\numberline {4}Mathematics}{16}
+\contentsline {subsection}{\numberline {4.0.3}Confusion matrix}{16}
+\contentsline {subsubsection}{Table of confusion}{16}
+\contentsline {subsection}{\numberline {4.0.4}Null hypothesis}{16}
+\contentsline {subsection}{\numberline {4.0.5}Likert scale}{16}
+\contentsline {subsubsection}{Evaluation}{17}
+\contentsline {subsection}{\numberline {4.0.6}Statistical significance}{17}
+\contentsline {subsubsection}{Chi-squared test}{17}
+\contentsline {subsubsection}{Student (T-test)}{17}
+\contentsline {subsubsection}{Wilcoxon (U-test)}{17}
+\contentsline {subsection}{\numberline {4.0.7}General linear model}{18}
+\contentsline {subsubsection}{Multivariate random variable}{18}
+\contentsline {subsubsection}{ANOVA}{18}
+\contentsline {subsubsection}{Linear regression}{19}
+\contentsline {subsection}{\numberline {4.0.8}Generalized linear model}{19}
+\contentsline {chapter}{\numberline {5}TXL}{20}
+\contentsline {section}{\numberline {5.1}Installation}{20}
+\contentsline {subsubsection}{Run}{20}
+\contentsline {section}{\numberline {5.2}Basic Syntax}{20}
+\contentsline {subsubsection}{Nonterminal Symbols}{21}
+\contentsline {subsubsection}{Terminal Symbols}{21}
+\contentsline {subsubsection}{Nonterminal Modifiers}{22}
+\contentsline {subsection}{\numberline {5.2.1}Rules and functions}{22}
+\contentsline {subsubsection}{Where}{23}
+\contentsline {subsection}{\numberline {5.2.2}Constructors and deconstructors}{23}
+\contentsline {chapter}{\numberline {6}R}{25}
+\contentsline {section}{\numberline {6.1}Basic commands}{25}
+\contentsline {subsection}{\numberline {6.1.1}Vectors}{25}
+\contentsline {subsection}{\numberline {6.1.2}Factors}{25}
+\contentsline {subsection}{\numberline {6.1.3}Functions}{25}
+\contentsline {subsection}{\numberline {6.1.4}Types}{26}
+\contentsline {subsubsection}{Array}{26}
+\contentsline {subsubsection}{MatrixIX}{26}
+\contentsline {subsubsection}{List}{26}
+\contentsline {subsubsection}{DataFrames}{26}
+\contentsline {subsection}{\numberline {6.1.5}Reading data from file}{26}
+\contentsline {subsubsection}{CSV}{26}
+\contentsline {subsubsection}{Table}{27}
+\contentsline {subsubsection}{Scan}{27}
+\contentsline {subsection}{\numberline {6.1.6}Control Statements}{27}
+\contentsline {subsection}{\numberline {6.1.7}Data Conversion}{27}
+\contentsline {section}{\numberline {6.2}Autogenerated Testcases Efficiency and Effectiveness}{28}
+\contentsline {subsection}{\numberline {6.2.1}Script}{28}
+\contentsline {subsection}{\numberline {6.2.2}Effectiveness Results}{30}
+\contentsline {subsubsection}{Formula}{32}
+\contentsline {subsection}{\numberline {6.2.3}Efficiency Results}{33}
+\contentsline {subsubsection}{Formula}{35}
+\contentsline {chapter}{\numberline {7}CodeSurfer}{36}
+\contentsline {section}{\numberline {7.1}Usage}{36}
+\contentsline {subsection}{\numberline {7.1.1}C++ Tutorial}{37}
+\contentsline {subsubsection}{Build a project}{37}
+\contentsline {subsubsection}{Surfing a project}{37}
+\contentsline {subsubsection}{Queries}{37}
+\contentsline {section}{\numberline {7.2}Program Representation}{38}
+\contentsline {subsection}{\numberline {7.2.1}Control Flow Graph}{38}
+\contentsline {subsubsection}{Syntax}{38}
+\contentsline {subsection}{\numberline {7.2.2}System Dependence Graph}{39}
+\contentsline {section}{\numberline {7.3}Scheme}{39}
+\contentsline {subsection}{\numberline {7.3.1}Syntax}{40}
+\contentsline {subsubsection}{Basic commands}{40}
+\contentsline {subsubsection}{Reserved Keywords}{40}
+\contentsline {subsubsection}{Types}{41}
+\contentsline {subsubsection}{Constants}{41}
+\contentsline {subsection}{\numberline {7.3.2}Function definition}{41}
+\contentsline {subsection}{\numberline {7.3.3}Let}{41}
+\contentsline {subsection}{\numberline {7.3.4}List operation}{43}
+\contentsline {subsection}{\numberline {7.3.5}File operations}{44}
+\contentsline {section}{\numberline {7.4}CodeSurfer Data Structure}{44}
+\contentsline {section}{\numberline {7.5}Data Distance}{45}

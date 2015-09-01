@@ -1,0 +1,70 @@
+\documentclass{beamer}
+\title{Debugging effectiveness summary}
+\author{Alessandro Valentini}
+\date{06.07.2015}
+
+\newcommand{\itembf}[1]{\item \textbf{#1}}
+
+
+\begin{document}
+\begin{frame}
+\maketitle
+\end{frame}
+
+\begin{frame}
+	\frametitle{Summary}
+	\framesubtitle{Intesting points}
+	\begin{itemize}
+	\item Hypothesis
+	\item Definition and planning
+	\item Results
+	\item Statistical consideration
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Hypothesis}
+\begin{itemize}
+	\item There is no difference in the \textbf{effectiveness} (number of correctly fixed faults) of debugging between autogen e manual test cases
+	\item There is no difference in the \textbf{efficiency} (corrected task per time) of debugging between autogen e manual test cases
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Definition and planning}
+The experiment:
+	\begin{itemize} 
+		\item compares manual test cases to Randoop and EvoSuite test cases
+		\item inspects the impact of obfuscated identifiers
+		\item subjects are divided in two groups balaced accordingly experience and ability
+		\item two different source code are used (XML-security and JTopas), each group has to debug a specific source using either manual or autogen tests.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Results I}
+	\begin{itemize} 
+		\itembf{MvR:} Efficiency and effectiveness are improved in particular on experienced developer (Eclipse Debugger), autogen test are easier to understand
+		\itembf{MvE:} Effectiveness shows no significant differences, efficiency is increased by manual test cases. Understandability is lower than Randoop test but do not influence debug
+		\itembf{MvO:} Obfuscation strongly decrease understandability of manual test cases, however this has no impact on debug
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Results II}
+	\begin{itemize} 
+		\item Autogen test cases are simpler than manual and more useful for unesperienced developers
+		\item Experienced developer perform well with both cases and can take advantage from advanced tools
+		\item Unexperienced developer use more time to understand test cases decreasing their performance 
+		\item In general autogen test cases are useful because can be generated quickly
+		\item In general debug should be demanded to experienced developers
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Statistical consideration}
+	\begin{itemize} 
+		\itembf{Confusion Matrix:} express the level of reliability of an algorithm 
+		\itembf{Null hypothesis:} No relationship between two events
+		\itembf{Likert scale:} Express feelings (level of agreement) respect to an object
+		\itembf{Statistically significant: } confidence interval etc to review
+		\itembf{Threats to validity:} no reward, order of tasks, few generator (free)
+	\end{itemize}
+\end{frame}
+
+\end{document}

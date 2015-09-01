@@ -1,0 +1,156 @@
+\chapter{Aspire}
+	Data obfuscation aims to hiding both variable content and usage through 3 main transformation:
+	\begin{itemize}
+	\itembf{Storage and Encoding:} change how data are represented and stored. Split Vriables (e.g. from 32 to 2x16bit), encoding (use odd/even short instead of booleans) with a 1-to-1 encoding, change lifetime, convert static data to procedures
+		\itembf{Aggregation:} alter how data are aggregated. Merge scalar, split, merge, fold arrays.
+		\itembf{Ordering:} item permutation in data structure: reorder arrays
+	\end{itemize}
+	
+\section{Parametric encoding}
+	Be $x* = e(x)$ the encoding function and $x = d(x*)$ the decoding function. Both \textit{e} and \textit{d} can depend on a multidimensional parameter \textit{p} chosen accordingly to the obfuscation strategy.	An array can be encoded encoding each cell.	An example is the usage of XOR $(x^{12})$
+	
+	An encoding is \textbf{homomorphic} if $e(x1 + x2) = e(x1) + e(x2)$, in this case data can be summed or multiplied without decoding both x1 and x2 before but only the result.
+	Residue Number Coding
+	Use the Chinese Remainder Theorem: a value x to encode and a sequence of coprime values $m1 ... mu$ we can decode e(x) = y solving a system with $m1 ... mu$ and the Chinese Reminder Theorem ensures that y exists and is unique.
+	A variable x of type T can be split (mapped) into n variables of type U
+	\begin{itemize}
+		\itembf{encoding:} $ {T} \Rightarrow {U^{n}} $
+		\itembf{decoding:} $ {U^{n}} \Rightarrow {T} $
+	\end{itemize}
+	Transform a static data into procedure: a chunk of code which, when executed, return the variable value. A sort of obfuscated getter/setter. A matrix can be associated to the gen function and ad each step provides a different parameter/function for the encoding.
+
+\section{Aggregation Transformation}
+	Several scalar can be merged into one single variable using different ranges. Operations on the original variables can be mapped to operations on the merging variable
+	Arrays can be obfuscate confusing the expression used as index, by splitting them in two or more arrays (or merging them in one single array) or folding them into multidimensional arrays (or flattening into a unidimensional array), or applying permutation to arrays elements.
+	
+\section{Selection of data obfuscation algorithms}
+	Obfuscation techniques involves several features which havCodinge to be analized:
+	\begin{itemize}
+		\itembf{Apply to types:} data type which the obfuscation is applicable to (single-value, statical allocated arrays), 
+		\itembf{Homomorphisms}
+		\itembf{Overhead:} execution time overhead, memory overhead
+		\itembf{Manual effort required:} modification required to the original code in order to apply a particular transformation (e.g. buffering), manual modification required to the obfuscated code, requirement to the original code in order to apply some technique (e.g. no pointers)
+	\end{itemize}
+	Possible issues are:
+	\begin{itemize}
+		\item Points-to: is difficult to understand when two variable are aliases or not (i.e. point to the same memory location), this may require a manual analysis and setup. 
+		\item Variable range has to be provided by developers to avoid encoding issues.
+		\item Static date may have to be initialized from precomputed constants, the procedure may require some modification accordingly with obfuscation algorithm
+		\item \hl{Bulk} operations, such as memcpy are not supported.
+		\item The usage of pointers may makes obfuscation useless with array folding/flattening because this operations does not modify data.
+	\end{itemize}
+	State of the art obfuscation is based on: XOR masking, Variable Merging, Residue Number Coding, Convert Static to Procedural Data.
+	Transformation are implemented using TXL 
+	
+	Obfuscating all the code is very expensive and unnecessary (i.e. gui variables do not need to be obfuscated), only sensitive variables can be obfuscated however this is a suboptimal solution because because a variable y may be assigned to an obfuscated variable x and tampering variable b is possibile to tamper variable x.
+	A solution is \textbf{Data Proximity Graph} 
+	$v_1$ is proximal to $v_2$ ($v_1 \Rightarrow v_2$) if $v_1$ is defines to the value of $v_2$, the distance between $v_1$ and $v_2$ is define as:
+	\begin{equation}
+		d(v_1, v_2) = min \{\abs{P} : P = pathDPG(v_1, v_2)\}
+	\end{equation}
+	
+	a variable is a neighbour of another variable if can reach if (or can be reached from it), as \ref{sec:metrics}.
+
+\section{Metrics}\label{sec:metrics}
+\begin{itemize}
+	\itembf{IENC/IDEC:} a counter is increased every time that a encoding/decoding operation is invoked. The measures are averaged over a fixed number of executions.
+	\itembf{ETIM:} sum of system and user time (function time under linux)
+	\itembf{SMEM:} memory allocated form the program
+	\itembf{NOBV:} the amount of the program subject to data obfuscation
+\end{itemize}
+
+
+\section{Security annotations} \cite{aspireD501}
+The goal of Aspire is to provide a user-friendly way to improve code security: the user can use security annotation during developement and an automated tool convert the code in an abfuscated version accordngly to developer specification. Aspire aims to a complete automated transformation without the need of security experts, however some procedure still require a manual intervention as well as  the choice of more effective strategy.
+Aspire provides two kinds of annotations.
+
+\subsubsection{Data annotation}
+Are inserted using the GCC feature "\_\_attribute\_\_" 
+\begin{lstlisting}
+	__attribute__ ((ASPIRE("<DATA_ANNOTATION>+")))
+\end{lstlisting}
+
+\subsubsection{Code annotation}
+A code annotations use the C99 "\_Pragma" and surround a section of code with a couple of tags. End tag does not contain any other information and just close the more recently opened section.
+\begin{lstlisting}
+ _Pragma("ASPIRE begin <CODE_ANNOTATION>+")
+ ...
+ _Pragma("ASPIRE end")
+\end{lstlisting} 
+
+\subsection{Scoping}
+A protection scope is a portion of the program associated to specific protection attributes through annotation.
+Rules for protection scopes:
+\begin{itemize}
+\item By default each compilation unit (i.e. file) has its own scope
+\item A section surrounded by begin/end annotations is a single scope
+\item Security annotation is associate to the specific variable from the declaration point until the end of its scope.
+\item Protection scopes and C scopes cannot be chained, but should instead be properly nested. (e.g. do not open/close a scope inside a loop).
+
+\end{itemize}
+
+Depending on the type of protection a scope can be propagated or not to called functions.
+
+\subsection{Annotations}
+
+\subsubsection{Protection Annotation}
+Is composed by an annotation name and some annotation parameters:
+\begin{lstlisting}
+__attribute__ ((ASPIRE(
+		"protection(PROTECTION_NAME[PARAM1 (VALUE), PARAM2 (VALUE)])+"
+		)))
+\end{lstlisting}
+
+\subsubsection{Profile Annotation}
+Profiles are basically placeholder for protection directives and are defined in external files. Profiles are more flexible and group multiple occurrences of the same annotation into a common profile. Several profiles can be defined (e.g. MILD and STRONG) and then the obfuscator may apply one or the other when invocate with the proper parameter.
+\begin{lstlisting}
+	profile MILD {
+		VARS=protection(xor,random);
+		STRS=protection(data_to_proc,lutable);
+		CRYP=none;
+	}
+	
+	profile STRONG {
+		VARS=protection(rnc,base(constant(101,103));
+		STRS=protection(data_to_proc,lutable);
+		CRYPT=protection(wbc, ...);
+	}
+	
+\end{lstlisting}
+
+A profile can be used both in data annotation and code annotations:
+
+\begin{lstlisting}
+int x __attribute(ASPIRE("profile(PROFILE_NAME)")))__ = 10;
+
+_Pragma("ASPRIRE begin profile(PROFILE_NAME)")
+...
+_Pragma("ASPRIRE end")
+\end{lstlisting}
+
+\subsubsection{Security Requirement Annotation}
+A variable can be annotated with a specific security requirements, the annotation will be evaluated an converted in a concrete protection strategy.
+\hl{Check for details}
+\begin{itemize}
+	\itembf{confidentiality:}
+	\itembf{privacy:}
+	\itembf{integrity:}
+	\itembf{nonRepudiation:}
+	\itembf{executionCorrectness:}
+\end{itemize}
+In C:
+\begin{lstlisting} [language=c]
+	int x __attribute__((ASPIRE("requirement(confidentiality)")) ;
+\end{lstlisting}
+
+\subsection{Conversion steps}
+The conversion from annotated source code to an obfuscated binary follows several steps essentially adding some intermediate step inside the compile chain.
+\begin{itemize}
+	\item The source code is preprocessed including all libraries as in the standard compile procedure .i
+	\item Annotate variables are registered in a specific file .f
+	\item The output is converted in a standard C language \hl{(?)}
+	\item Security enhancements are applied to the code using TXL  .i
+	\item The code is compiled, assembled and linked as in a standard compilation process
+\end{itemize}
+
+From \cite{ceccato2014cryptographyDataObfuscation}

@@ -1,0 +1,155 @@
+\chapter{Taxonomy}
+\section{What is code obfuscation}
+Code obfuscation aims to make a program difficult to “read” and understand. This feature is useful in several scenarios such as Intellectual property Protection: suppose to have a valuable software which use advanced algorithms, even if it is closed source another enterprise may buy a copy and trace variables in order to stole algorithms which are not protected by copyright laws. In several cases software cannot be release as service due to costs or performance reasons.\\
+A code obfuscator get a source code P as input and provide an equivalent but more complex code P\textsuperscript{1} in output, the inverse of what a good programmer shall do. \\
+\cite{collberg1997taxonomy}
+\section{Code transformation}	
+The code can be made more complex in several ways, for exaple adding classes and methods, increasing nesting level, number of arguments, height of increasing tree and variable dependences. New branches and complex termination conditions can be also used.  A variable can be substituted by an expression or can be declared in an illogic order.\\
+In Java we can use a custom version of standard libraries changing names. In other cases several methods (and their signature) can be merged adding a parameter in order to discriminate the required function. Methods can also be cloned providing fake calls.\\
+A spesific function can be delegated to an external program instead of using an internal method.
+
+A trasformation is
+\begin{itemize}
+\itembf{potent} if it is hard to read for a human, for example an unnatural loop can result difficult to understand for a human but easy to roll/unroll for a deobfuscator.
+\itembf{resilient} if can confuse an automatic deobfuscator. A variable is opaque if it has a property q known a priori to the obfuscator but is difficult for the deobfuscatore deduce that property. \hl{[taxonomy p.10]} A transformation impossible to resolve by a deobfuscator is called one-way.
+\end{itemize}
+Code obfuscation may increase the amount of required memory or penalize execution time. The cost is classified as:
+\begin{itemize}
+\itembf{dear (exponential):} P\textsuperscript{1} costs requires exponentially more resources than P
+\itembf{costly (polynomial):} P\textsuperscript{1} requires $O(n^{p})$ more resources than P 
+\itembf{cheap (linear):} P\textsuperscript{1} requires O(n) more resources than P 
+\itembf{free (constant):} P\textsuperscript{1} requires O(1) more resources than P
+\end{itemize}
+
+
+\section{Deobfuscation techniques}
+
+\subsection{Program slicing}
+During the obfuscation process logically bounded section of a program will be separated and confused with chunks of boughed code. A deobfuscator decompose the obfuscated program to smaller pieces of code (slices) easier to handle and analyze. Sections that contribute to the value of the same variable are recognized ad bounded. The usage of aliases and the addition of parameter can significantly slow down the slicer because the cost of slicing grows exponentially with the number of formal parameter. Also the addition of false dependences will slow down the slicer, for example a multiplication by 1 inside a boughed section.
+
+\subsection{Static analysis}
+It is the simplest kind of analysis of the code it analyze the run-time characteristic of an obfuscated application. For example static analysis can identify condition which always return the same value and alert the engineer of that in order to understand whether is a security check or an obfuscation technique. An obfuscation technique is weak if can be identified by static analysis. In order to prevent SA many predicates can be inserted or the obfuscation can be designed in such a way to require to crack several predicates at a time.
+
+\subsection{Theorem Proving}
+In some cases is possibile to automatically remove obfuscations (i.e. identify and remove "if(false)" or identical branches), the procedure is similar to a traditional code optimization. To make things more difficult for the deobfuscator we can use theorem instead of values: a function can implement a theorem which return the same boolean value in every case. The more difficult to prove is the theorem the more diffidult is to deobfuscate the code. In particular a termination problem (which are impossible to prove) can be inserted: for example a predicate can implement an unsatisfiable 3SAT problem wich is known to be NP, an automatic deobfuscator requires a huge amount of time to understant that the function will return false for every possible imput.\\
+A procedure works in a similar manner but returning values instead of booleans. It can be implemented using a \textit{Mealy machine} which is a finite state machine whose output values are determined both by its current state and the current inputs.
+
+\subsection{Dynamic analysis}
+Can be used to enhance SA, corresponds to a realtime execution of the obfuscated code relying on a partial static analysis executed previously.
+Execution penalization are stronger when dealing with paralelized code, for example creating dummy processes or splitting a sequential section to be executed in parallel, however the resilience of this transformation is hight.
+
+\section{Code Samples}
+Some C exaples of obfuscation techniques. Note that elements should be passed using pointers or declaring structures in order to handle encoded/decoded values instead of just print them.
+\subsection{Aggregation}
+Covert 4 chars into 1 long:
+\begin{lstlisting}
+long encode (char c1, char c2, char c3, char c4){
+	long l;
+  	l = c1 + 256*c2 + 256*256*c3 + 256*256*256*c4;  
+	return l;
+}
+\end{lstlisting}
+Decode the long printing 4 chars:
+\begin{lstlisting}
+void decode (long l){
+char d1, d2, d3, d4;
+
+d1 = l;
+ 	d2 = l/256;
+ 	d3 = l/(256*256);
+ 	d4 = (l/(256*256*256));
+ 	
+ 	printf("Deobfuscated dirty: %c%c%c%c \n",d1,d2,d3,d4);
+}
+\end{lstlisting}
+Note that the assignment of a variable start from the rightmost (less significative) bit to the leftmost, this imply an automatical truncation of the most significative bits avoiding solutions such as $d2 = (l/256)\%(256*256);$
+
+\clearpage
+\subsection{Conjunctive Normal Form}
+Example of CNF using two modules: a single integer will be converted in a couple.
+\begin{lstlisting}
+	void encode(int x, int m1, int m2, int enc[]){
+		enc[0] = x%m1;
+		enc[1] = x%m2;
+	}
+\end{lstlisting}
+
+Decoding using the extended euclid's algorithm
+\begin{lstlisting}
+int decode (int enc[], int m1, int m2){
+	int v, k;
+	int m = m1*m2;
+
+	struct Couple s = egcd(setCouple(m1, m2));
+
+	v = enc[0]*m2*s.a + enc[1]*m1*s.b;
+	k = ((v%m)+m)%m;
+
+	return k;
+}
+\end{lstlisting}
+
+Note that the egcd function (extended euclid's algorithm to calculate the GCD) can be implemented iteratively:
+
+\begin{lstlisting}
+struct Couple egcd(struct Couple q){
+	int tmp;
+
+	int s = 0, old_s = 1;
+	int t = 1, old_t = 0;
+	int r = q.b, old_r = q.a;
+	int quotient;
+
+	while (r != 0){
+		quotient = old_r / r;
+		tmp = r;		
+		r = old_r - quotient * r;
+		old_r = tmp;
+		tmp = s;
+		s = old_s - quotient * s;
+		old_s = tmp;
+		tmp = t;
+		t = old_t - quotient * t;
+		old_t = tmp;
+	}
+
+	return setCouple(old_t, old_s);
+}
+
+\end{lstlisting}
+\clearpage
+or recursively:
+\begin{lstlisting}
+struct Couple egcd(struct Couple s){
+	
+	struct Couple old_s;	
+	
+	if (s.b == 0)
+	return setCouple(1, 0);
+	
+	else{
+	old_s = s;
+	s = egcd(setCouple(s.b, (s.a % s.b)));
+	return setCouple(s.b, s.a - s.b * (old_s.a/old_s.b));
+	}
+}
+\end{lstlisting}
+
+Couple is a simple structure (a,b) to achieve a simpler recursion than using arrays. setCouple is syntactic sugar: it allows one-line structure setup.  \\\\
+
+$m1 < m2$ and $(m1*m2) < n$ where n is the value to encode. In C:
+\begin{lstlisting}
+//order modules
+int tmp;
+if (m1 > m2){
+	tmp = m1;
+	m1 = m2;
+	m2 = tmp;
+}
+
+//check upperbound
+if (x >= m1*m2)
+	return -1;
+\end{lstlisting}
+
+

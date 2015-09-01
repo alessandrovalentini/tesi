@@ -1,0 +1,16 @@
+TOP-DOWN PARSING
+	Build the tree from the root to the leaf, may require backtracking and multiple reads of the string to accept.
+
+	Cannot accept left-recursive grammars (e.g. A -> Ab) so recursions have to be eliminated substituting the term with (e.g. A) adding to the grammar a new term (e.g. N) and substituting all recursive occurerences of A with the equivalent occurrences with N (e.g. A = aN; N = bN).
+	Left recursion shuld be avoided however TXL is able to identify and optimize direct left recursion.
+
+	Left-factoring is useful to reduce the risk of backtraking: in caso of ambiguous rule is useful rewrite A productions in order to keep a decision when more information are available.
+
+LL GRAMMARS
+
+	Descendent predictive parsing does not require backtraking, but the grammar cannot be left-recursive and and does not require left-factoring. Such a grammar is called LL(1).
+	- L : the string is analized from left to right
+	- L : the leftmost symbol not considere is expanded first
+	- k : k TERMINAL symbols are required in order to perform a recognition
+	
+	Any LL(k) language is context-free.

@@ -1,0 +1,41 @@
+\begin{thebibliography}{1}
+
+\bibitem{collberg1997taxonomy}
+C.~Collberg, C.~Thomborson, and D.~Low, ``A taxonomy of obfuscating
+  transformations,'' tech. rep., Department of Computer Science, The University
+  of Auckland, New Zealand, 1997.
+
+\bibitem{aspireD501}
+M.~Ceccato and R.~Tiella, ``Framework architecture, tool flow, and apis of the
+  aspire compiler tool chain and decision support system,'' 10 2014.
+
+\bibitem{ceccato2014cryptographyDataObfuscation}
+M.~Ceccato and R.~Tiella, ``Early white-box cryptography and data obfuscation
+  report,'' 10 2014.
+
+\bibitem{ceccato2015debuggingEffectivenessEfficiency}
+M.~Ceccato, A.~Marchetto, L.~Mariani, C.~D. Nguyen, and P.~Tonella, ``Do
+  automatically generated test cases make debugging easier? an experimental
+  assessment of debugging effectiveness and efficiency,'' 03 2015.
+
+\bibitem{cordy2011excerpts}
+J.~R. Cordy, ``Excerpts from the txl cookbook,'' in {\em Generative and
+  Transformational Techniques in Software Engineering III}, pp.~27--91,
+  Springer, 2011.
+
+\bibitem{venables2015introduction}
+W.~N. Venables, D.~M. Smith, R.~D.~C. Team, {\em et~al.}, ``An introduction to
+  r,'' 06 2015.
+
+\bibitem{csurfUserGuide2012}
+``Code surfer user guide and reference,'' tech. rep., Technical report, Gramma
+  Tech Product Documentation, 2001. http://www. grammatech.
+  com/csurf-doc/manual. html, 2012.
+
+\bibitem{abelson1991revised}
+H.~Abelson, R.~Dybvig, C.~Haynes, G.~Rozas, N.~Adams~IV, D.~Friedman,
+  E.~Kohlbecker, G.~Steele~Jr, D.~Bartley, R.~Halstead, {\em et~al.}, ``Revised
+  report on the algorithmic language scheme,'' {\em ACM SIGPLAN Lisp Pointers},
+  vol.~4, no.~3, pp.~1--55, 1991.
+
+\end{thebibliography}

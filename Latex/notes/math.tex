@@ -1,0 +1,99 @@
+\chapter{Mathematics}
+	\subsection{Confusion matrix}
+	Is a matrix constituted by the same classes on both columns and rows. \hl{[see wiki]}
+	\begin{itemize}
+		\itembf{Predicted class:} the sum of each column is the amount of predicted objects belonging to a class.
+		\itembf{Actual class:} the sum of each row is the right amount of objects belonging to a class
+		\itembf{Correct guesses:} are located on the diagonal
+	\end{itemize}
+	\subsubsection{Table of confusion}
+	IS a table of four fields: true negative (upper left), false positive (upper right), false negative (lower left), true positive (lower right)
+	
+	\subsection{Null hypothesis}
+	"There is no relationship between two measured phenomena" Can be derived from a standard hypothesis: "p implies q" became "p does not imply q".
+	\begin{itemize}
+		\itembf{Type I Error}: is the incorrect rejection of a true null hypothesis, a sort of false positive 
+		\itembf{Type II Error}: is the failure to reject a false null hypothesis, a sort of false negative
+	\end{itemize}
+	
+	\subsection{Likert scale}
+	Is a scale based on the "level of agreement" respect to a question (item) which measure the intensity of the feelings of a set of subjects. Answer are usually evaluated on a scale "strongly disagree, disagree, uncertain, agree, strongly agree".\\\\
+	Items do not express facts, have to be stated such that different feelengs lead to different answers, should be clear and impersonal, half of the items should express against the object and the other half favorable to the object.
+	
+	\subsubsection{Evaluation}
+	A value is associated with each option (e.g. 1 to strongly disagree, 5 to strongly agree), values are inverted in the case of negative questions. Final result can correspond to the sum of the answers of a signle subject or to the sum of the mean of single items. 
+	
+	\subsection{Statistical significance}
+	Given a confidence interval $\alpha$ (e.g. 0.05) the null hypothesis can be accepted if the probability \textit{p} of the event described by the 0HP is not lower than $\alpha$. In other words the event negated by the null hypothesis is likely if it is verifies at least with the $ 1-\alpha $ probability (e.g. $\geq95\%$).
+	Range $ 1-\alpha $ is called confidence interval and contains a given portion of values (e.g. 95\%). %Nothing can be said about a specific value: for example a tool can increase the efficiency with a confidence of 95\% but we do not know the probability to increase the efficiency exactly of 12\%.
+	\hl{v.81/86 Bonaccorsi}
+	A test can be:
+	\begin{itemize}
+		\itembf{Parametric}: suppose that the result belongs to some kind of distribution (e.g. Gauss). The probability of true-positive/true-negative is higher than non parametric.
+		\itembf{Non-parametric}: no assumption about the data distribution is required
+	\end{itemize}
+
+	\subsubsection{Chi-squared test}
+	Verify whether or not values of an experiment are compliant with a predefined distribution accordingly with an error range. It is used in order to decide to accept or not the null hypothesis. \hl{Chi-squared is defined as} a Summation of square of the differences between the real value and the expected value. Degrees of freedom are the number of variables involved. If chi-squared = 0 the experiment exatly matches the expectations.
+	
+	\subsubsection{Student (T-test)}
+	Is a parametric test (it assumes a Gaussian distribution) used to estimate the average value of a small population, with large population it is very similar to a Gaussian distribution. 
+	\\\\
+	T identifies the confidence interval and we need to know the expected average for a normal distribution (mu), the real average(X segnato), the real variance (s\^2) and the number of variables(n). For n grater than 120 we can use the normal distribution quantiles.
+	\hl{2.6.2 Bonaccorsi}
+	
+	\subsubsection{Wilcoxon (U-test)}
+	Is a non-parametric test, can be compared to the parametric t-test and can achine a precision around 95\%. p-value should be less than 0.05 to have some statstical significance (i.e. reject the null hypothesis).\\
+	Test can be paired if exists any correlation between test, (e.g. pollution measures in the same city with same environmental characteristics) or unpaired when test are unrelated (e.g. different cities).
+	\\\\
+	Wilcoxon Rank
+
+\subsection{General linear model}
+The generalized linear model (GLM) is a flexible generalization of ordinary linear regression that allows for response variables that have error distribution models other than a normal distribution. linear model. This consists of fitting a model of the dependent output variables (effectiveness and efficiency of debugging) as a function of the independent input variables (all the factors, including
+
+\begin{equation}
+	Y = XB + U
+\end{equation}
+Litterals are all matrix where:
+\begin{itemize}
+	\itembf{Y:} multivariate measurements
+	\itembf{X:} describes a statistical model (might be a design matrix) and usually contains 0/1 (membership in ANOVA) or continuous variables
+	\itembf{B:} estimated parameters
+	\itembf{U:} error (or noise) matrix
+\end{itemize}
+
+\subsubsection{Multivariate random variable}
+A multivariate random variable or random vector is a list of mathematical variables each of whose value is unknown, either because the value has not yet occurred or because there is imperfect knowledge of its value. The individual variables in a random vector are grouped together because there may be correlations among them — often they represent different properties of an individual statistical unit (e.g. a particular person, event, etc.). Normally each element of a random vector is a real number. \hl{[see wiki]}
+\\\\
+The multivariate analysis study the simultaneous variation of two or more random variables. Data are represented in form of matrix where each row represent the set of characteristic of each measurement while each column represent the set of variations of the same characteristic.
+
+\subsubsection{ANOVA}
+ANalysis Of VAriance: analyze variance differences between different populations. Is useful to discover variations bounded to different populations: variance can be calculatd within populations (based on members of the same population) or between populations (differences between variance of several populations). If VWP is significantly higher than VBP then differences between groups are only bounded to internal variance.\\
+Several models can be investicated: an event is bounded to a single property, to several unrelated properties or to several interacting properties (e. they strengthen/weaken each other).
+For example:
+\begin{itemize}
+	\item The price of a car depends on its brand
+	\item The price of a car depends on both its performance and furniture
+	\item The performance of a car depends on both its engine and its mass 
+\end{itemize}
+Other statistical models are ANCOVA (Covariance), MANOVA (Multivariate ANOVA), MANCOVA (Multivariate covariance)
+
+\subsubsection{Linear regression}
+Linear regression analyze the bound between a dependent variable Y from an independent variable X searching a linear relation between the two.
+\begin{equation}
+	Y_{i} = \beta_{0} + \beta _{1}X_{i}+u_{i}
+\end{equation}
+Where: $Y_{i}$ is the dependent variable, $\beta_{0} + \beta _{1}X_{i}$ is a function which represent the regression line and $u_{i}$ is the error.
+
+\subsection{Generalized linear model}
+The generalized linear model is an extension of the general linear model that allows the response (dependent) variable  to have distribution different than normal (linear, poisson, gamma, inverse gaussian). The response variable can be related to the linear model through a link function, which allows it to vary linearly with the predicted values rather than assuming that the response itself must vary linearly. In the general linear model the link function is an identity.
+Summarizing does not implies that a constant change in a predictor leads to a constant change in the response variable.
+\\\\
+The expected value and the variance can be describe as follow
+\begin{equation}
+	E[Y] = g_{-1}(X \beta)
+\end{equation}
+\begin{equation}
+	V[Y] = V(g_{-1}(X \beta))
+\end{equation}
+where $g$ is the link function and $\beta$  a linear combination of unknown parameters.

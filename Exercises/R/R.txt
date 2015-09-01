@@ -1,0 +1,88 @@
+VECTORS
+All the following implementations return a list of even numbers between 2 and 100
+2*1:50
+seq(from=2, to=100, by=2)
+seq(from=2, length=50, by=2)
+
+TYPES
+
+
+FACTORS
+Create a list of names:
+	names <- c("asd", ... , "asd")
+
+Encode the vector as factor:
+	namef <- factor(names)
+
+Create a list of values of the same lenght of names:
+	values <- c(1,2,3,...)
+
+Apply a function infolving boh arrays (e.g. the mean), values will be grouped accordingly with factors
+	meanvalues <- tapply(values, names, mean)
+
+FUNCTIONS
+	A function can be built in a simple way:
+	stderr <- function(x) sqrt(var(x)/length(x))
+	incster <- tapply(values, namef, stderr)
+
+ARRAY
+	A <-(data_vector, size)
+
+MATRIX
+http://www.r-tutor.com/r-introduction/matrix
+	A = matrix(c(2,3,4,5,6,7,8,9,0), nrow=3, ncol=3, byrow = TRUE)
+	product: A %*% A 
+
+	cbin() #Add column
+	rbind() #Add row
+
+LIST
+	lst = list(reference="value", reference2=number, refererence3=c(1,2,3))
+
+	to print a value:
+	lst[[index]]
+	lst$reference
+
+	to access a subvalue of a index/reference (e.g. the array) use 
+	ls[[indexLst]][indexArray]
+
+	a list can be attached attach(list) or detached detach(list). This makes the inner arguments of the list accessible as standard varaibles.
+
+DATA FRAMES
+http://www.r-tutor.com/r-introduction/data-frame
+
+	A data frame is used for storing data tables. It is a list of vectors of equal length. For example, the following variable df is a data frame containing three vectors n, s, b.
+
+READING DATA FROM FILE
+	file="file_name" can be omitted and a "file_name" ise used by default. The file has to be in the working direcotory
+
+	CSV: data are separated by a comma, the first line is automatically recognized as a header
+	c = read.csv("input.csv")
+
+	TABLE: data are separate b whitespace, the first line will be used as header
+	t = read.table("input.dat", header = TRUE)
+
+	Useful addition are:
+	sep = "separator_char"	// e.g. sep = "\t" allows the usage of spaces into a table
+	na.strings = "-" 
+	fill = TRUE 			//insert an empty value for empty rows but will left-shif values in tables
+
+	Scan("filename", what="type") interpred a file like a vector
+
+CONTROL STATEMENTS
+	if(condition){
+		...	
+	}
+	else {
+		...
+	}
+
+	for(i in i:n){
+		...	
+	}
+
+DATA CONVERTION
+	apply - When you want to apply a function to the rows or columns of a matrix (and higher-dimensional analogues).
+	lapply - When you want to apply a function to each element of a list in turn and get a list back.
+	sapply - When you want to apply a function to each element of a list in turn, but you want a vector back, rather than a list.
+	tapply - For when you want to apply a function to subsets of a vector and the subsets are defined by some other vector, usually a factor.
